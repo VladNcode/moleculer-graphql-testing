@@ -1,0 +1,12 @@
+# type Query {
+# 	getusers(id: Int): [User]
+# 	getsms: [Sms]
+# }
+
+type User {
+	id: Int
+	name: String
+	email: String
+	phone: String
+	sms: [Sms]
+}
