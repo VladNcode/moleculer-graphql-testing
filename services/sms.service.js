@@ -77,29 +77,6 @@ module.exports = {
 				return 'PG data was send to DB service!';
 			},
 		},
-		user: {
-			// rest: {
-			// 	method: 'POST',
-			// 	path: '/pg',
-			// },
-			rest: 'GET /',
-			params: {
-				name: 'string',
-				email: 'string',
-				phone: 'string',
-			},
-			async handler(ctx) {
-				const payload = {
-					name: ctx.params.name,
-					email: ctx.params.email,
-					phone: ctx.params.phone,
-				};
-
-				ctx.emit('db.called', { type: 'user', payload });
-				return 'USER data was send to DB service!';
-			},
-		},
 	},
-
 	events: {},
 };

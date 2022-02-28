@@ -25,6 +25,7 @@ module.exports = {
 		ApolloService({
 			// Global GraphQL typeDefs
 			typeDefs: typesArray,
+			// typeDefs: ``,
 
 			// Global resolvers
 			resolvers: {},

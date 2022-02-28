@@ -1,6 +1,6 @@
-type Mutation {
-	welcome(reciever: String!, body: String!, query: String!): String
-}
+# type Mutation {
+# 	welcome(reciever: String!, body: String!, query: String!): String
+# }
 
 type Sms {
 	id: Int

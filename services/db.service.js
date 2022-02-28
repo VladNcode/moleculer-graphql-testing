@@ -165,5 +165,14 @@ module.exports = {
 			const sms = await Sms.findAll({ where: { user_id: ctx.params.id } });
 			return sms;
 		},
+
+		async 'userUpdate.called'(ctx) {
+			this.logger.info('****** USERUPDATE event was caught! ******');
+			const { id, name, email, phone } = ctx.params;
+			const user = await User.findOne({ where: { id } });
+			const updatedUser = await user.update({ name, email, phone });
+			// console.log(updatedUser);
+			return updatedUser;
+		},
 	},
 };
