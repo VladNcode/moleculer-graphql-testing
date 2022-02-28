@@ -1,10 +1,11 @@
 'use strict';
 
-const passport = require('passport');
-// const ApiGateway = require('./api.service');
+// const PassportMixin = require('../mixins/passport.mixin');
+const passportMixin = require('../mixins/passport.mixin');
 
 module.exports = {
 	name: 'user',
+	mixins: [passportMixin],
 	actions: {
 		user: {
 			// rest: {
@@ -20,7 +21,6 @@ module.exports = {
 			graphql: {
 				mutation: `createuser(name: String!, email: String!, phone: String!): User`,
 			},
-			uses: [],
 			async handler(ctx) {
 				// console.log(ctx.params.name, ctx.params.email, ctx.params.phone);
 
@@ -89,6 +89,18 @@ module.exports = {
 			handler(ctx) {
 				console.log(ctx.params.payload.id, ctx.params.id);
 				return ctx.params.payload.id === ctx.params.id;
+			},
+		},
+		socialLogin: {
+			params: {
+				// provider: { type: 'string' },
+				// profile: { type: 'object' },
+				// jwt: { type: 'string' },
+				// refreshToken: { type: 'string', optional: true },
+			},
+			async handler(ctx) {
+				this.logger.info('hello');
+				return 'hello';
 			},
 		},
 	},

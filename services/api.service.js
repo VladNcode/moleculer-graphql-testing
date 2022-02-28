@@ -1,33 +1,35 @@
 'use strict';
 
-const passport = require('passport');
-var JwtStrategy = require('passport-jwt').Strategy,
-	ExtractJwt = require('passport-jwt').ExtractJwt;
-var opts = {};
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = 'secret';
-opts.issuer = 'accounts.examplesoft.com';
-opts.audience = 'yoursite.net';
+// const passport = require('passport');
+// var JwtStrategy = require('passport-jwt').Strategy,
+// 	ExtractJwt = require('passport-jwt').ExtractJwt;
+// var opts = {};
+// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+// opts.secretOrKey = 'secret';
+// opts.issuer = 'accounts.examplesoft.com';
+// opts.audience = 'yoursite.net';
 
-passport.use(
-	new JwtStrategy(opts, function (jwt_payload, done) {
-		console.log('************************************************');
-		// User.findOne({ id: jwt_payload.sub }, function (err, user) {
-		// if (err) {
-		// 	return done(err, false);
-		// }
-		// if (user) {
-		// 	return done(null, user);
-		// } else {
-		// 	return done(null, false);
-		// 	// or you could create a new account
-		// }
-		// });
-	})
-);
+// passport.use(
+// 	new JwtStrategy(opts, function (jwt_payload, done) {
+// 		console.log('************************************************');
+// 		// User.findOne({ id: jwt_payload.sub }, function (err, user) {
+// 		// if (err) {
+// 		// 	return done(err, false);
+// 		// }
+// 		// if (user) {
+// 		// 	return done(null, user);
+// 		// } else {
+// 		// 	return done(null, false);
+// 		// 	// or you could create a new account
+// 		// }
+// 		// });
+// 	})
+// );
 
-passport.initialize();
-passport.session();
+// passport.initialize();
+// passport.session();
+
+const PassportMixin = require('../mixins/passport.mixin');
 
 const path = require('path');
 const ApiGateway = require('moleculer-web');
@@ -49,6 +51,18 @@ const typesArray = loadFilesSync(path.join(__dirname, '..', '**/*.graphql'));
 module.exports = {
 	name: 'api',
 	mixins: [
+		PassportMixin({
+			routePath: '/auth',
+			localAuthAlias: 'user.socialLogin',
+			successRedirect: '/',
+			providers: {
+				jwt: '123' && '123',
+				google: '123' && '123',
+				facebook: false,
+				github: false,
+				twitter: false,
+			},
+		}),
 		ApiGateway,
 		// GraphQL Apollo Server
 		ApolloService({
@@ -96,16 +110,16 @@ module.exports = {
 
 				// Route-level Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
 				// use: [passport.initialize(), passport.session()],
-				use: [passport.initialize(), passport.session()],
+				use: [],
 
 				// Enable/disable parameter merging method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Disable-merging
 				mergeParams: true,
 
 				// Enable authentication. Implement the logic into `authenticate` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authentication
-				authentication: false,
+				authentication: true,
 
 				// Enable authorization. Implement the logic into `authorize` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authorization
-				authorization: false,
+				authorization: true,
 
 				// The auto-alias feature allows you to declare your route alias directly in your services.
 				// The gateway will dynamically build the full routes from service schema.
@@ -189,6 +203,7 @@ module.exports = {
 		 */
 		async authenticate(ctx, route, req) {
 			// Read the token from header
+			console.log('****************************************');
 			const auth = req.headers['authorization'];
 
 			if (auth && auth.startsWith('Bearer')) {
@@ -226,6 +241,13 @@ module.exports = {
 			// It check the `auth` property in action schema.
 			if (req.$action.auth == 'required' && !user) {
 				throw new ApiGateway.Errors.UnAuthorizedError('NO_RIGHTS');
+			}
+		},
+		async signInSocialUser(params, cb) {
+			try {
+				cb(null, await this.broker.call('user.socialLogin', params));
+			} catch (err) {
+				cb(err);
 			}
 		},
 	},
