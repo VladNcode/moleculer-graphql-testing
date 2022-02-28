@@ -59,7 +59,7 @@ module.exports = {
 
 				const updatedUser = await ctx.emit('userUpdate.called', payload);
 				// return 'USER data was send to DB service!';
-				console.log(updatedUser[0]);
+				// console.log(updatedUser[0]);
 
 				this.broker.broadcast('graphql.publish', { tag: 'TEST', payload: updatedUser[0] });
 				return updatedUser[0];
@@ -69,11 +69,20 @@ module.exports = {
 		updatedevent: {
 			params: { payload: 'object' },
 			graphql: {
-				subscription: `updatedevent: User`,
+				subscription: `updatedevent(id: Int!): User`,
 				tags: ['TEST'],
+				filter: 'user.user.filter',
 			},
 			handler(ctx) {
 				return ctx.params.payload;
+			},
+		},
+
+		'user.filter': {
+			params: { id: 'number', payload: 'object' },
+			handler(ctx) {
+				console.log(ctx.params.payload.id, ctx.params.id);
+				return ctx.params.payload.id === ctx.params.id;
 			},
 		},
 	},
