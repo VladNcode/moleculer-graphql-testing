@@ -10,3 +10,7 @@ type User {
 	phone: String
 	sms: [Sms]
 }
+
+type Token {
+	token: String
+}

@@ -1,5 +1,6 @@
 'use strict';
 
+const passport = require('passport');
 // const ApiGateway = require('./api.service');
 
 module.exports = {
@@ -19,8 +20,13 @@ module.exports = {
 			graphql: {
 				mutation: `createuser(name: String!, email: String!, phone: String!): User`,
 			},
+			uses: [],
 			async handler(ctx) {
-				console.log(ctx.params.name, ctx.params.email, ctx.params.phone);
+				// console.log(ctx.params.name, ctx.params.email, ctx.params.phone);
+
+				// const test = passport.authenticate('jwt', { session: false });
+				// console.log(test);
+				// console.log(ctx);
 
 				const payload = {
 					name: ctx.params.name,

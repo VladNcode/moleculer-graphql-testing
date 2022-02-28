@@ -1,5 +1,6 @@
 const mysql = require('mysql2');
 const { Sequelize } = require('sequelize');
+const passport = require('passport');
 
 let Email;
 let User;
